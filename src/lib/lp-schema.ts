@@ -25,7 +25,7 @@ export const ConstraintSchema = z.object({
 
 export const ObjectiveSchema = z.object({
   coefficients: z.record(z.string(), z.number()),
-  constant: z.number().optional().default(0),
+  constant: z.number().optional(),
 });
 
 export const LPModelSchema = z.object({
