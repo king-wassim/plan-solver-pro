@@ -7,11 +7,13 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import appCss from "../styles.css?url";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Topbar } from "@/components/topbar";
+import { useAppStore } from "@/lib/store";
 
 function NotFoundComponent() {
   return (
@@ -105,11 +107,28 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
+function ThemeSync() {
+  const theme = useAppStore((s) => s.theme);
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === "system") {
+      const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      root.classList.toggle("dark", dark);
+      root.classList.toggle("light", !dark);
+    } else {
+      root.classList.toggle("dark", theme === "dark");
+      root.classList.toggle("light", theme === "light");
+    }
+  }, [theme]);
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ThemeSync />
       <SidebarProvider>
         <div className="flex min-h-screen w-full bg-background text-foreground">
           <AppSidebar />

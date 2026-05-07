@@ -25,7 +25,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SAMPLE_MODELS } from "@/lib/sample-models";
-import { solveLP } from "@/lib/solver.client";
+import { solveLP } from "@/lib/solver";
 import type { SolveResult } from "@/lib/lp-schema";
 
 export const Route = createFileRoute("/")({
@@ -68,14 +68,9 @@ function DashboardPage() {
   useEffect(() => {
     let mounted = true;
     solveLP(SAMPLE_MODELS[0]).then((r) => {
-      if (mounted) {
-        setDemo(r);
-        setLoading(false);
-      }
+      if (mounted) { setDemo(r); setLoading(false); }
     });
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, []);
 
   const saturated = demo?.constraints.filter((c) => c.saturated).length ?? 0;
